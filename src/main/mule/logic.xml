@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:custom-logging="http://www.mulesoft.org/schema/mule/custom-logging" xmlns:min-log="http://www.mulesoft.org/schema/mule/min-log"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/min-log http://www.mulesoft.org/schema/mule/min-log/current/mule-min-log.xsd
+http://www.mulesoft.org/schema/mule/custom-logging http://www.mulesoft.org/schema/mule/custom-logging/current/mule-custom-logging.xsd">
+	<flow name="get:\customers:api-config:subflow" doc:id="c2056628-a6ef-4931-946b-ed2e7f1838aa" >
+		<custom-logging:execution-time doc:name="Execution time" doc:id="caff58e0-0c04-4d9d-9da8-6a80ac1a3943" executionDescription="Get Customers Execution" transactionProperties="#[vars.transactionProperties]">
+			<set-payload value='#[output application/json
+---
+[
+  {
+    id: 1,
+    name: "Tom Murray",
+    location: "Liverpool"
+  },
+{
+    id: 2,
+    name: "Tom Murray",
+    location: "Liverpool"
+  }
+]]' doc:name="Set Payload" doc:id="05f8bc02-a375-4180-88c6-83f6bfcf830b" />
+		</custom-logging:execution-time>
+	</flow>
+	<flow name="get:\customers\(id):api-config:subFlow" doc:id="6006c0a0-f4e6-45ed-9fe1-e0938ef3975b" >
+		<custom-logging:execution-time doc:name="Execution time" doc:id="2ed87ca9-dde2-439b-a907-b0261c03b464" executionDescription="Get Customer By ID Execution" transactionProperties="#[vars.transactionProperties]">
+			<set-payload value='#[output application/json
+---
+  {
+    id: 1,
+    name: "Tom Murray",
+    location: "Liverpool"
+  }
+]' doc:name="Set Payload" doc:id="bb88a9a2-b8ec-4831-a8c4-78d63dc1fc81" />
+		</custom-logging:execution-time>
+	</flow>
+</mule>

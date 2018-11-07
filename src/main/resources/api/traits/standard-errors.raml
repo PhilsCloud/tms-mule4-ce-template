@@ -1,0 +1,137 @@
+#%RAML 1.0 Library
+traits:
+  standard-error-responses:
+    responses:
+      400:
+        description: The server cannot or will not process the request due to something that is perceived to be a client error (e.g., malformed request syntax, invalid request message framing, or deceptive request routing).
+        body:
+          application/json:
+            example: |
+              {
+                "status": "400",
+                "errorCode": "APIKIT - Bad Request",
+                "message": "The Client ID was not present within the headers of the request",
+                "loggedAt": "23/09/2018 10:35:56"
+              }
+              
+      401:
+        description: The supplied credentials are invalid.
+        body:
+          application/json:
+            example: |
+              {
+                "status": "401",
+                "errorCode": "APIKIT - Unauthorised",
+                "message": "Unauthorised request, we was unable to complete your request",
+                "loggedAt": "23/09/2018 10:35:56"
+              }
+              
+      403:
+        description: There is a problem with the credentials that were provided.
+        body:
+          application/json:
+            example: |
+              {
+                "status": "403",
+                "errorCode": "APIKIT - Forbidden",
+                "message": "You lack the permissions to access this resource",
+                "loggedAt": "23/09/2018 10:35:56"
+              }
+              
+      404:
+        description: The server cannot find the requested resource.
+        body:
+          application/json:
+            example: |
+              {
+                "status": "404",
+                "errorCode": "APIKIT - Resource Not Found",
+                "message": "The requested resource could not be Found",
+                "loggedAt": "23/09/2018 10:35:56"
+              }
+              
+      405:
+        description: A request was made of a resource using a request method not supported by that resource; for example, using GET on a form which requires data to be presented via POST, or using PUT on a read-only resource.
+        body:
+          application/json:
+            example: |
+              {
+                "status": "405",
+                "errorCode": "APIKIT - Method Not Allowed",
+                "message": "We do not support your requested method",
+                "loggedAt": "23/09/2018 10:35:56"
+              }
+              
+      406:
+        description: The target resource does not have a current representation that would be acceptable to the user agent.
+        body:
+          application/json:
+            example: |
+              {
+                "status": "406",
+                "errorCode": "APIKIT - Unacceptable",
+                "message": "The content type does not match the expected type",
+                "loggedAt": "23/09/2018 10:35:56"
+              }
+              
+      415:
+        description: The accept header specified an unsupported media type.
+        body:
+          application/json:
+            example: |
+              {
+                "status": "415",
+                "errorCode": "APIKIT - Unsupported Media Type",
+                "message": "The media type is not supported",
+                "loggedAt": "23/09/2018 10:35:56"
+              }
+              
+      500:
+        description: An internal processing error occurred while processing the API request.
+        body:
+          application/json:
+            example: |
+              {
+                "status": "500",
+                "errorCode": "APIKIT - Internal Server Error",
+                "message": "An internal processing error occurred while processing the API request.",
+                "loggedAt": "23/09/2018 10:35:56"
+              }
+              
+      597:
+        description: Experience API timeout during dependent service invocation.
+        body:
+          application/json:
+            example: |
+              {
+                "status": "597",
+                "errorCode": "APIKIT - Experience API Time out",
+                "message": "Experience API timeout during dependent service invocation.",
+                "loggedAt": "23/09/2018 10:35:56"
+              }
+              
+      598:
+        description: Process API timeout during dependent service invocation.
+        body:
+          application/json:
+            example: |
+              {
+                "status": "598",
+                "errorCode": "APIKIT - Process API Time out",
+                "message": "Process API timeout during dependent service invocation.",
+                "loggedAt": "23/09/2018 10:35:56"
+              }
+              
+      599:
+        description: System API timeout during dependent service invocation.
+        body:
+          application/json:
+            example: |
+              {
+                "status": "599",
+                "errorCode": "APIKIT - System API Time out",
+                "message": "System API timeout during dependent service invocation.",
+                "loggedAt": "23/09/2018 10:35:56"
+              }
+              
+

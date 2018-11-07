@@ -1,0 +1,35 @@
+#%RAML 1.0
+title: tms-ce-template-raml
+description: 'A boilerplate template for mule CE edition'
+version: v1
+baseUri: http://api.samplehost.com
+mediaType:
+  - application/json
+protocols:
+  - HTTP
+  - HTTPS
+
+uses:
+  standard-errors: traits/standard-errors.raml
+  security-schema: securitySchemes/security-schema.raml
+  content-type: traits/content-type.raml
+  client-credentials: traits/client-credentials.raml
+
+/customers:
+  is: [standard-errors.standard-error-responses,content-type.content-type-required,client-credentials.client-credentials-required]
+  get:
+    description: 'Returns a list of all customers'
+    responses:
+      200:
+        body:
+          application/json:
+            example: !include examples/customers.json
+  /{id}:
+    is: [standard-errors.standard-error-responses,content-type.content-type-required,client-credentials.client-credentials-required]
+    get:
+      description: 'Returns customer details by ID'
+      responses:
+        200:
+          body:
+            application/json:
+              example: !include examples/customer.json

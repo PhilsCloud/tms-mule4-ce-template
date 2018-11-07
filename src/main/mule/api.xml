@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:custom-logging="http://www.mulesoft.org/schema/mule/custom-logging" xmlns:min-log="http://www.mulesoft.org/schema/mule/min-log" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/min-log http://www.mulesoft.org/schema/mule/min-log/current/mule-min-log.xsd
+http://www.mulesoft.org/schema/mule/custom-logging http://www.mulesoft.org/schema/mule/custom-logging/current/mule-custom-logging.xsd">
+	<flow name="api-main">
+        <http:listener config-ref="api-httpListenerConfig" path="/${api.basePath}/${api.version}/${api.name}/*">
+            <http:response statusCode="#[vars.httpStatus default 200]"
+				reasonPhrase="#[vars.reasonPhrase]" >
+				<http:headers><![CDATA[#[output applicaton/java
+---
+{
+	"x-transaction-id" : vars.transactionProperties.'x-transaction-id'
+}]]]></http:headers>
+			</http:response>
+			<http:error-response statusCode="#[vars.httpStatus default 500]" reasonPhrase='#[vars.httpReason]'>
+				<http:body><![CDATA[#[payload]]]></http:body>
+			</http:error-response>
+        </http:listener>
+		<custom-logging:generate-log doc:name="Generate log" doc:id="c676329d-3d0d-4343-a471-833d0d1e2d1d" target="transactionProperties" headers="#[attributes.headers]">
+			<custom-logging:custom-attributes >
+				<custom-logging:custom-attribute key="applicationName" value="${api.name}" />
+				<custom-logging:custom-attribute key="applicationVersion" value="${api.version}" />
+				<custom-logging:custom-attribute key="relativePath" value="#[attributes.relativePath]" />
+				<custom-logging:custom-attribute key="remoteAddress" value="#[attributes.remoteAddress]" />
+				<custom-logging:custom-attribute key="host" value="#[attributes.localAddress]" />
+				<custom-logging:custom-attribute key="method" value="#[attributes.method]" />
+				<custom-logging:custom-attribute key="contentType" value="#[attributes.headers.'content-type']" />
+			</custom-logging:custom-attributes>
+		</custom-logging:generate-log>
+		<custom-logging:execution-time doc:name="Execution time" doc:id="32600e86-cce1-4ab2-9394-75ab4d5a9636" executionDescription="Routing Execution" transactionProperties="#[vars.transactionProperties]">
+			<apikit:router config-ref="api-config" />
+		</custom-logging:execution-time>
+		<custom-logging:log doc:name="Log" doc:id="55f432c2-e62a-4a4f-96d8-eb6d40dabca5" msg="Exiting application" transactionProperties="#[vars.transactionProperties]">
+			<custom-logging:new-properties >
+				<custom-logging:new-property key="httpStatus" value="#[vars.httpStatus default 200]" />
+			</custom-logging:new-properties>
+		</custom-logging:log>            
+    </flow>
+    <flow name="api-console">
+        <http:listener config-ref="api-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="api-config" />
+    </flow>
+    <flow name="get:\customers:api-config">
+		<flow-ref doc:name="Get Customers Subflow" doc:id="b7e5bb38-9611-4dad-8d87-8373228b1374" name="get:\customers:api-config:subflow" />
+    </flow>
+    <flow name="get:\customers\(id):api-config">
+		<flow-ref doc:name="Get Customer By ID Subflow" doc:id="bf42b239-2657-461f-9654-75682b9483ad" name="get:\customers\(id):api-config:subFlow" />
+    </flow>
+</mule>
