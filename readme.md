@@ -14,3 +14,6 @@ The application comes with custom logging, a custom logging component which I ha
 
 ## Error Handling
 Global error handling has been implemented which creates the correct HTTP status codes while presenting an accurate error description to the client while logging additional information into the error log.
+
+## Maven Gitflow Helper plugin
+The POM file contains some elements of the Gitflow Maven Helper Plugin, in order to active the plugin you will need to make some configuration changes and ensure you have a Nexus repository up and running along with the likes of Jenkins or Bamboo. Further details on the plugin can be found here: https://github.com/egineering-llc/gitflow-helper-maven-plugin
