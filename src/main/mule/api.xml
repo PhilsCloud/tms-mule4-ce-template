@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns:custom-logging="http://www.mulesoft.org/schema/mule/custom-logging" xmlns:min-log="http://www.mulesoft.org/schema/mule/min-log" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+<mule xmlns:custom-logging="http://www.mulesoft.org/schema/mule/custom-logging" xmlns:min-log="http://www.mulesoft.org/schema/mule/min-log" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd
 http://www.mulesoft.org/schema/mule/min-log http://www.mulesoft.org/schema/mule/min-log/current/mule-min-log.xsd
 http://www.mulesoft.org/schema/mule/custom-logging http://www.mulesoft.org/schema/mule/custom-logging/current/mule-custom-logging.xsd">
 	<flow name="api-main">
         <http:listener config-ref="api-httpListenerConfig" path="/${api.basePath}/${api.version}/${api.name}/*">
             <http:response statusCode="#[vars.httpStatus default 200]"
 				reasonPhrase="#[vars.reasonPhrase]" >
-				<http:headers><![CDATA[#[output applicaton/java
+				<http:headers><![CDATA[#[output application/java
 ---
 {
 	"x-transaction-id" : vars.transactionProperties.'x-transaction-id'
@@ -17,6 +17,7 @@ http://www.mulesoft.org/schema/mule/custom-logging http://www.mulesoft.org/schem
 			</http:error-response>
         </http:listener>
 		<custom-logging:generate-log doc:name="Generate log" doc:id="c676329d-3d0d-4343-a471-833d0d1e2d1d" target="transactionProperties" headers="#[attributes.headers]">
+			<error-mapping targetType="LOG:BAD_REQUEST" />
 			<custom-logging:custom-attributes >
 				<custom-logging:custom-attribute key="applicationName" value="${api.name}" />
 				<custom-logging:custom-attribute key="applicationVersion" value="${api.version}" />
@@ -34,7 +35,7 @@ http://www.mulesoft.org/schema/mule/custom-logging http://www.mulesoft.org/schem
 			<custom-logging:new-properties >
 				<custom-logging:new-property key="httpStatus" value="#[vars.httpStatus default 200]" />
 			</custom-logging:new-properties>
-		</custom-logging:log>            
+		</custom-logging:log>
     </flow>
     <flow name="api-console">
         <http:listener config-ref="api-httpListenerConfig" path="/console/*">

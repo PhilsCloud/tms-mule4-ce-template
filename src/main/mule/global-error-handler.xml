@@ -6,13 +6,12 @@
 	xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
 	<error-handler name="global-error-handler" doc:id="339c8ed3-afa9-487f-8ee6-655c14fc2031">
-		
-        <on-error-propagate type="HTTP:BAD_REQUEST, APIKIT:BAD_REQUEST">
-        		<set-variable value="400" doc:name="Set the HTTP Status - 400" doc:id="e129979a-6444-427f-b917-17deddbfd81c" variableName="httpStatus"/>
-            	<set-variable value='We were unable to process your request as it was malformed, please check your configuration and try again.' doc:name="Set errorMessage" doc:id="1f11a5a6-dc4a-4fa0-9d52-6cde4204baf1" variableName="errorMessage"/>
+    <on-error-propagate type="HTTP:BAD_REQUEST, APIKIT:BAD_REQUEST, LOG:BAD_REQUEST" enableNotifications="true" logException="true">
+      <set-variable value="400" doc:name="Set the HTTP Status - 400" doc:id="e129979a-6444-427f-b917-17deddbfd81c" variableName="httpStatus"/>
+      <set-variable value='We were unable to process your request as it was malformed, please check your configuration and try again.' doc:name="Set errorMessage" doc:id="1f11a5a6-dc4a-4fa0-9d52-6cde4204baf1" variableName="errorMessage"/>
 			<flow-ref doc:name="global-prepare-error-response-sub-flow" doc:id="ef951fe8-521e-4c3a-b907-a77d766679b2" name="global-prepare-error-response-sub-flow"/>
-        </on-error-propagate>
-        	<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="f8aa7515-79f7-4f2b-ac10-73d47167f034" type="HTTP:CLIENT_SECURITY, HTTP:SECURITY, SECURITY">
+    </on-error-propagate>
+    <on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="f8aa7515-79f7-4f2b-ac10-73d47167f034" type="HTTP:CLIENT_SECURITY, HTTP:SECURITY, SECURITY">
 			<set-variable value="401" doc:name="Set HTTP Status - 401" doc:id="c13fdbd4-b254-4a22-a477-0f5f353d67e0" variableName="httpStatus"/>
 			<set-variable value="We were unable to complete your request because you are required to authenticate." doc:name="Set errorMessage" doc:id="8816c762-291c-4691-9e0a-f55fd94128f9" variableName="errorMessage"/>
 			<flow-ref doc:name="global-prepare-error-response-sub-flow" doc:id="1120587a-d5e0-461d-b2c2-72586977f0fb" name="global-prepare-error-response-sub-flow"/>
@@ -73,10 +72,9 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
 			<flow-ref doc:name="global-prepare-error-response-sub-flow" doc:id="ef951fe8-521e-4c3a-b907-a77d766679b5" name="global-prepare-error-response-sub-flow"/>
 		</on-error-propagate>
 	</error-handler>
-	
+
 	<sub-flow name="global-prepare-error-response-sub-flow" doc:id="144512c8-8979-4ad1-ad6e-4daef8496754">
-		<set-payload value="#[
-import * from dw::core::Strings
+		<set-payload value="#[import * from dw::core::Strings
 output application/json
 ---
 error: {
@@ -86,8 +84,7 @@ error: {
        errorMessage: if(vars.errorMessage != null) vars.errorMessage else error.errorType.namespace ++ ' - ' ++  capitalize (error.errorType.identifier),
        errorDescription: capitalize(error.errorType.identifier) ++ ' - ' ++ error.description,
 	   clientIdentifier: attributes.headers.client_id
-}
-]" doc:name="Set Error Log Payload" doc:id="e416f002-ff5a-4f83-a6d2-a559787565e3" />
+}]" doc:name="Set Error Log Payload" doc:id="e416f002-ff5a-4f83-a6d2-a559787565e3" />
 		<logger level="ERROR" doc:name="Log Error" doc:id="04e30967-b2b6-4f8d-a292-167a4f0caadc" message="#[&quot;\'Transaction\': &quot; ++ correlationId ++ &quot; \'Error Payload\': &quot;] #[payload]"/>
 		<set-payload value="#[
 import * from dw::core::Strings
